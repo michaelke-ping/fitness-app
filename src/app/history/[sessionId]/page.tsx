@@ -106,7 +106,7 @@ export default function SessionDetailPage() {
     <div className="max-w-[480px] mx-auto px-4 py-6">
       <Link
         href="/history"
-        className="inline-flex items-center gap-1 text-zinc-400 hover:text-white transition-colors mb-6"
+        className="inline-flex items-center gap-1 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors mb-6"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -124,13 +124,13 @@ export default function SessionDetailPage() {
       </Link>
 
       {loading && (
-        <div className="text-zinc-400 text-center py-12">Loading...</div>
+        <div className="text-zinc-500 dark:text-zinc-400 text-center py-12">Loading...</div>
       )}
 
       {!loading && !session && (
         <div className="text-center py-12">
           <p className="text-xl font-semibold mb-2">Session not found</p>
-          <p className="text-zinc-400">
+          <p className="text-zinc-500 dark:text-zinc-400">
             This workout session could not be found.
           </p>
         </div>
@@ -142,7 +142,7 @@ export default function SessionDetailPage() {
             <h1 className="text-2xl font-bold">
               {getScheduleName(session.workout_schedules)}
             </h1>
-            <p className="text-zinc-400 text-lg">
+            <p className="text-zinc-500 dark:text-zinc-400 text-lg">
               {formatDate(session.started_at)}
             </p>
 
@@ -158,7 +158,7 @@ export default function SessionDetailPage() {
               </span>
 
               {session.completed_at && (
-                <span className="text-zinc-400 text-sm">
+                <span className="text-zinc-500 dark:text-zinc-400 text-sm">
                   {formatDuration(session.started_at, session.completed_at)}
                 </span>
               )}
@@ -166,8 +166,8 @@ export default function SessionDetailPage() {
           </div>
 
           {session.notes && (
-            <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4 mb-6">
-              <p className="text-zinc-400 text-sm">{session.notes}</p>
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-4 mb-6">
+              <p className="text-zinc-500 dark:text-zinc-400 text-sm">{session.notes}</p>
             </div>
           )}
 
@@ -181,7 +181,7 @@ export default function SessionDetailPage() {
             {session.session_exercises.map((exercise) => (
               <div
                 key={exercise.id}
-                className="bg-zinc-900 border border-zinc-800 rounded-lg p-4"
+                className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-4"
               >
                 <div className="flex items-start gap-3">
                   <div className="mt-0.5">
@@ -207,7 +207,7 @@ export default function SessionDetailPage() {
                         strokeWidth={2.5}
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="w-5 h-5 text-zinc-600"
+                        className="w-5 h-5 text-zinc-400 dark:text-zinc-600"
                       >
                         <line x1="18" y1="6" x2="6" y2="18" />
                         <line x1="6" y1="6" x2="18" y2="18" />
@@ -219,18 +219,18 @@ export default function SessionDetailPage() {
                     <div className="flex justify-between items-start">
                       <p
                         className={`font-medium text-lg ${
-                          exercise.completed ? "text-white" : "text-zinc-500"
+                          exercise.completed ? "text-zinc-900 dark:text-white" : "text-zinc-400 dark:text-zinc-500"
                         }`}
                       >
                         {exercise.name}
                       </p>
-                      <p className="text-zinc-400 text-sm whitespace-nowrap ml-4">
+                      <p className="text-zinc-500 dark:text-zinc-400 text-sm whitespace-nowrap ml-4">
                         {exercise.sets} x {exercise.reps}
                       </p>
                     </div>
 
                     {exercise.completed && exercise.completed_at && (
-                      <p className="text-zinc-500 text-sm mt-1">
+                      <p className="text-zinc-400 dark:text-zinc-500 text-sm mt-1">
                         Completed at {formatTime(exercise.completed_at)}
                       </p>
                     )}

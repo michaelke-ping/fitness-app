@@ -37,6 +37,37 @@ export default function WorkoutPage() {
   const [finishing, setFinishing] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // Rest timer state
+  const [restSeconds, setRestSeconds] = useState(0);
+  const [restTotal, setRestTotal] = useState(90);
+  const restTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const clearRestTimer = useCallback(() => {
+    if (restTimerRef.current) {
+      clearInterval(restTimerRef.current);
+      restTimerRef.current = null;
+    }
+    setRestSeconds(0);
+  }, []);
+
+  const startRestTimer = useCallback((duration: number) => {
+    if (restTimerRef.current) clearInterval(restTimerRef.current);
+    setRestTotal(duration);
+    setRestSeconds(duration);
+    restTimerRef.current = setInterval(() => {
+      setRestSeconds((prev) => {
+        if (prev <= 1) {
+          if (restTimerRef.current) {
+            clearInterval(restTimerRef.current);
+            restTimerRef.current = null;
+          }
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, []);
+
   const startTimer = useCallback((startedAt: string) => {
     if (timerRef.current) clearInterval(timerRef.current);
 
@@ -58,6 +89,7 @@ export default function WorkoutPage() {
   useEffect(() => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
+      if (restTimerRef.current) clearInterval(restTimerRef.current);
     };
   }, []);
 
@@ -150,13 +182,25 @@ export default function WorkoutPage() {
     const nowCompleted = !exercise.completed;
     const completedAt = nowCompleted ? new Date().toISOString() : null;
 
-    setExercises((prev) =>
-      prev.map((ex) =>
+    setExercises((prev) => {
+      const updated = prev.map((ex) =>
         ex.id === exercise.id
           ? { ...ex, completed: nowCompleted, completed_at: completedAt }
           : ex
-      )
-    );
+      );
+
+      // Start rest timer when completing an exercise, but not for the last one
+      if (nowCompleted) {
+        const allCompleted = updated.every((ex) => ex.completed);
+        if (!allCompleted) {
+          startRestTimer(90);
+        } else {
+          clearRestTimer();
+        }
+      }
+
+      return updated;
+    });
 
     const { error } = await supabase
       .from("session_exercises")
@@ -196,7 +240,7 @@ export default function WorkoutPage() {
   if (loading) {
     return (
       <div className="max-w-[480px] mx-auto px-4 py-6">
-        <div className="text-zinc-400 text-center py-12">Loading workout...</div>
+        <div className="text-zinc-500 dark:text-zinc-400 text-center py-12">Loading workout...</div>
       </div>
     );
   }
@@ -208,7 +252,7 @@ export default function WorkoutPage() {
           <p className="text-xl font-semibold mb-2">Workout not found</p>
           <button
             onClick={() => router.push("/")}
-            className="text-zinc-400 underline mt-4"
+            className="text-zinc-500 dark:text-zinc-400 underline mt-4"
           >
             Go back
           </button>
@@ -221,16 +265,16 @@ export default function WorkoutPage() {
     <div className="max-w-[480px] mx-auto px-4 py-6">
       <div className="flex items-center justify-between mb-2">
         <h1 className="text-2xl font-bold">{workoutName}</h1>
-        <span className="text-zinc-400 font-mono text-lg tabular-nums">
+        <span className="text-zinc-500 dark:text-zinc-400 font-mono text-lg tabular-nums">
           {elapsed}
         </span>
       </div>
 
-      <p className="text-zinc-400 text-sm mb-6">
+      <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-6">
         {completedCount}/{exercises.length} exercises completed
       </p>
 
-      <div className="w-full bg-zinc-800 rounded-full h-1.5 mb-6">
+      <div className="w-full bg-zinc-200 dark:bg-zinc-800 rounded-full h-1.5 mb-6">
         <div
           className="bg-green-500 h-1.5 rounded-full transition-all duration-300"
           style={{
@@ -242,16 +286,65 @@ export default function WorkoutPage() {
         />
       </div>
 
+      {restSeconds > 0 && (
+        <div className="mb-4 bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-zinc-500 dark:text-zinc-400 text-sm font-medium uppercase tracking-wide">
+              Rest Timer
+            </span>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setRestSeconds((prev) => {
+                    const newVal = prev + 30;
+                    setRestTotal((t) => t + 30);
+                    return newVal;
+                  });
+                }}
+                className="px-3 py-1 text-xs font-medium bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-700 dark:text-zinc-300 rounded transition-colors"
+              >
+                +30s
+              </button>
+              <button
+                type="button"
+                onClick={clearRestTimer}
+                className="px-3 py-1 text-xs font-medium bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-700 dark:text-zinc-300 rounded transition-colors"
+              >
+                Skip
+              </button>
+            </div>
+          </div>
+          <p
+            className={`text-4xl font-bold font-mono tabular-nums text-center mb-3 transition-colors ${
+              restSeconds <= 5 ? "text-red-400 animate-pulse" : "text-zinc-900 dark:text-white"
+            }`}
+          >
+            {Math.floor(restSeconds / 60)}:{(restSeconds % 60).toString().padStart(2, "0")}
+          </p>
+          <div className="w-full bg-zinc-300 dark:bg-zinc-700 rounded-full h-2">
+            <div
+              className={`h-2 rounded-full transition-all duration-1000 linear ${
+                restSeconds <= 5 ? "bg-red-500" : "bg-green-500"
+              }`}
+              style={{
+                width: `${(restSeconds / restTotal) * 100}%`,
+              }}
+            />
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col gap-3 mb-8">
         {exercises.map((exercise) => (
           <button
             key={exercise.id}
             type="button"
             onClick={() => toggleExercise(exercise)}
-            className={`w-full text-left bg-zinc-900 border rounded-lg p-4 transition-colors ${
+            className={`w-full text-left bg-white dark:bg-zinc-900 border rounded-lg p-4 transition-colors ${
               exercise.completed
                 ? "border-green-900/50"
-                : "border-zinc-800 active:border-zinc-600"
+                : "border-zinc-200 dark:border-zinc-800 active:border-zinc-400 dark:active:border-zinc-600"
             }`}
           >
             <div className="flex items-center gap-4">
@@ -259,7 +352,7 @@ export default function WorkoutPage() {
                 className={`flex-shrink-0 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-colors ${
                   exercise.completed
                     ? "bg-green-500 border-green-500"
-                    : "border-zinc-600"
+                    : "border-zinc-300 dark:border-zinc-600"
                 }`}
               >
                 {exercise.completed && (
@@ -282,16 +375,16 @@ export default function WorkoutPage() {
               <div className="flex-1 min-w-0">
                 <p
                   className={`font-medium text-lg ${
-                    exercise.completed ? "text-zinc-500" : "text-white"
+                    exercise.completed ? "text-zinc-400 dark:text-zinc-500" : "text-zinc-900 dark:text-white"
                   }`}
                 >
                   {exercise.name}
                 </p>
-                <p className="text-zinc-400 text-sm">
+                <p className="text-zinc-500 dark:text-zinc-400 text-sm">
                   {exercise.sets} x {exercise.reps}
                 </p>
                 {exercise.completed && exercise.completed_at && (
-                  <p className="text-zinc-600 text-xs mt-1">
+                  <p className="text-zinc-400 dark:text-zinc-600 text-xs mt-1">
                     Completed at{" "}
                     {new Date(exercise.completed_at).toLocaleTimeString([], {
                       hour: "numeric",
@@ -308,7 +401,7 @@ export default function WorkoutPage() {
       <button
         onClick={finishWorkout}
         disabled={finishing}
-        className="block w-full text-center bg-white text-black font-semibold py-4 rounded-lg text-lg hover:bg-zinc-200 transition-colors disabled:opacity-50"
+        className="block w-full text-center bg-black dark:bg-white text-white dark:text-black font-semibold py-4 rounded-lg text-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors disabled:opacity-50"
       >
         {finishing ? "Finishing..." : "Finish Workout"}
       </button>

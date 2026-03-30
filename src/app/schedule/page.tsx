@@ -59,7 +59,7 @@ export default function SchedulePage() {
       <h1 className="text-2xl font-bold mb-6">Weekly Schedule</h1>
 
       {loading && (
-        <div className="text-zinc-400 text-center py-12">Loading...</div>
+        <div className="text-zinc-500 dark:text-zinc-400 text-center py-12">Loading...</div>
       )}
 
       {!loading && (
@@ -72,29 +72,29 @@ export default function SchedulePage() {
               <Link
                 key={index}
                 href={`/schedule/edit?day=${index}`}
-                className={`block bg-zinc-900 border rounded-lg p-4 ${
-                  isToday ? "border-white" : "border-zinc-800"
-                } hover:border-zinc-600 transition-colors`}
+                className={`block bg-white dark:bg-zinc-900 border rounded-lg p-4 ${
+                  isToday ? "border-zinc-900 dark:border-white" : "border-zinc-200 dark:border-zinc-800"
+                } hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors`}
               >
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className={`font-medium text-lg ${isToday ? "text-white" : "text-zinc-300"}`}>
+                    <p className={`font-medium text-lg ${isToday ? "text-zinc-900 dark:text-white" : "text-zinc-700 dark:text-zinc-300"}`}>
                       {dayName}
                       {isToday && (
-                        <span className="text-xs text-zinc-400 ml-2">TODAY</span>
+                        <span className="text-xs text-zinc-500 dark:text-zinc-400 ml-2">TODAY</span>
                       )}
                     </p>
                     {schedule ? (
-                      <p className="text-zinc-400 text-sm mt-1">
+                      <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-1">
                         {schedule.name}
                       </p>
                     ) : (
-                      <p className="text-zinc-600 text-sm mt-1">Rest Day</p>
+                      <p className="text-zinc-400 dark:text-zinc-600 text-sm mt-1">Rest Day</p>
                     )}
                   </div>
                   <div className="flex items-center gap-2">
                     {schedule && (
-                      <p className="text-zinc-500 text-sm">
+                      <p className="text-zinc-400 dark:text-zinc-500 text-sm">
                         {schedule.schedule_exercises.length} exercise
                         {schedule.schedule_exercises.length !== 1 ? "s" : ""}
                       </p>
@@ -109,7 +109,7 @@ export default function SchedulePage() {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="text-zinc-600"
+                      className="text-zinc-400 dark:text-zinc-600"
                     >
                       <path d="M9 18l6-6-6-6" />
                     </svg>

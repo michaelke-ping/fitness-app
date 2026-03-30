@@ -43,7 +43,7 @@ const DAY_LABELS = ["S", "M", "T", "W", "T", "F", "S"];
 
 export default function ScheduleEditPage() {
   return (
-    <Suspense fallback={<div className="text-zinc-400 text-center py-12">Loading...</div>}>
+    <Suspense fallback={<div className="text-zinc-500 dark:text-zinc-400 text-center py-12">Loading...</div>}>
       <ScheduleEditContent />
     </Suspense>
   );
@@ -253,7 +253,7 @@ function ScheduleEditContent() {
       <div className="flex items-center gap-3 mb-6">
         <Link
           href="/schedule"
-          className="text-zinc-400 hover:text-white transition-colors"
+          className="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
           aria-label="Back to schedule"
         >
           <svg
@@ -281,8 +281,8 @@ function ScheduleEditContent() {
             onClick={() => handleDaySwitch(index)}
             className={`w-10 h-10 rounded-full text-sm font-medium transition-colors ${
               index === activeDay
-                ? "bg-white text-black"
-                : "bg-zinc-800 text-zinc-400 hover:text-white"
+                ? "bg-black dark:bg-white text-white dark:text-black"
+                : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
             }`}
           >
             {label}
@@ -291,14 +291,14 @@ function ScheduleEditContent() {
       </div>
 
       {loading && (
-        <div className="text-zinc-400 text-center py-12">Loading...</div>
+        <div className="text-zinc-500 dark:text-zinc-400 text-center py-12">Loading...</div>
       )}
 
       {!loading && (
         <div className="flex flex-col gap-4">
           {/* Workout name */}
           <div>
-            <label className="text-sm text-zinc-400 mb-1 block">
+            <label className="text-sm text-zinc-500 dark:text-zinc-400 mb-1 block">
               Workout Name
             </label>
             <input
@@ -306,13 +306,13 @@ function ScheduleEditContent() {
               value={workoutName}
               onChange={(e) => setWorkoutName(e.target.value)}
               placeholder="e.g. Push Day, Upper Body"
-              className="w-full bg-zinc-800 text-white rounded-lg px-4 py-3 border border-zinc-700 focus:border-zinc-500 focus:outline-none placeholder:text-zinc-600"
+              className="w-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg px-4 py-3 border border-zinc-300 dark:border-zinc-700 focus:border-zinc-500 focus:outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
             />
           </div>
 
           {/* Exercises */}
           <div>
-            <label className="text-sm text-zinc-400 mb-2 block">
+            <label className="text-sm text-zinc-500 dark:text-zinc-400 mb-2 block">
               Exercises
             </label>
 
@@ -320,7 +320,7 @@ function ScheduleEditContent() {
               {exercises.map((exercise, index) => (
                 <div
                   key={index}
-                  className="bg-zinc-900 border border-zinc-800 rounded-lg p-3"
+                  className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-3"
                 >
                   <div className="flex items-start gap-2">
                     <div className="flex-1 min-w-0">
@@ -331,7 +331,7 @@ function ScheduleEditContent() {
                           updateExercise(index, "name", e.target.value)
                         }
                         placeholder="Exercise name"
-                        className="w-full bg-zinc-800 text-white rounded-lg px-3 py-2 text-sm border border-zinc-700 focus:border-zinc-500 focus:outline-none placeholder:text-zinc-600"
+                        className="w-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg px-3 py-2 text-sm border border-zinc-300 dark:border-zinc-700 focus:border-zinc-500 focus:outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                       />
                     </div>
                     <button
@@ -358,7 +358,7 @@ function ScheduleEditContent() {
 
                   <div className="flex gap-2 mt-2">
                     <div className="w-20">
-                      <label className="text-xs text-zinc-500 mb-0.5 block">
+                      <label className="text-xs text-zinc-400 dark:text-zinc-500 mb-0.5 block">
                         Sets
                       </label>
                       <input
@@ -372,11 +372,11 @@ function ScheduleEditContent() {
                             parseInt(e.target.value, 10) || 1
                           )
                         }
-                        className="w-full bg-zinc-800 text-white rounded-lg px-3 py-2 text-sm border border-zinc-700 focus:border-zinc-500 focus:outline-none"
+                        className="w-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg px-3 py-2 text-sm border border-zinc-300 dark:border-zinc-700 focus:border-zinc-500 focus:outline-none"
                       />
                     </div>
                     <div className="w-24">
-                      <label className="text-xs text-zinc-500 mb-0.5 block">
+                      <label className="text-xs text-zinc-400 dark:text-zinc-500 mb-0.5 block">
                         Reps
                       </label>
                       <input
@@ -386,11 +386,11 @@ function ScheduleEditContent() {
                           updateExercise(index, "reps", e.target.value)
                         }
                         placeholder="8-12"
-                        className="w-full bg-zinc-800 text-white rounded-lg px-3 py-2 text-sm border border-zinc-700 focus:border-zinc-500 focus:outline-none placeholder:text-zinc-600"
+                        className="w-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg px-3 py-2 text-sm border border-zinc-300 dark:border-zinc-700 focus:border-zinc-500 focus:outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <label className="text-xs text-zinc-500 mb-0.5 block">
+                      <label className="text-xs text-zinc-400 dark:text-zinc-500 mb-0.5 block">
                         Notes
                       </label>
                       <input
@@ -400,7 +400,7 @@ function ScheduleEditContent() {
                           updateExercise(index, "notes", e.target.value)
                         }
                         placeholder="Optional"
-                        className="w-full bg-zinc-800 text-white rounded-lg px-3 py-2 text-sm border border-zinc-700 focus:border-zinc-500 focus:outline-none placeholder:text-zinc-600"
+                        className="w-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg px-3 py-2 text-sm border border-zinc-300 dark:border-zinc-700 focus:border-zinc-500 focus:outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                       />
                     </div>
                   </div>
@@ -411,7 +411,7 @@ function ScheduleEditContent() {
             {/* Add Exercise button */}
             <button
               onClick={addExercise}
-              className="w-full mt-3 py-3 border-2 border-dashed border-zinc-700 rounded-lg text-zinc-400 text-sm font-medium hover:border-zinc-500 hover:text-zinc-300 transition-colors"
+              className="w-full mt-3 py-3 border-2 border-dashed border-zinc-300 dark:border-zinc-700 rounded-lg text-zinc-500 dark:text-zinc-400 text-sm font-medium hover:border-zinc-400 dark:hover:border-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
             >
               + Add Exercise
             </button>
@@ -432,7 +432,7 @@ function ScheduleEditContent() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full bg-white text-black font-semibold py-3 rounded-lg text-lg hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-black dark:bg-white text-white dark:text-black font-semibold py-3 rounded-lg text-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? "Saving..." : "Save Changes"}
           </button>

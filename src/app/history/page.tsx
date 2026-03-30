@@ -82,13 +82,13 @@ export default function HistoryPage() {
       <h1 className="text-2xl font-bold mb-6">Workout History</h1>
 
       {loading && (
-        <div className="text-zinc-400 text-center py-12">Loading...</div>
+        <div className="text-zinc-500 dark:text-zinc-400 text-center py-12">Loading...</div>
       )}
 
       {!loading && sessions.length === 0 && (
         <div className="text-center py-12">
           <p className="text-xl font-semibold mb-2">No workouts yet</p>
-          <p className="text-zinc-400">
+          <p className="text-zinc-500 dark:text-zinc-400">
             Start your first workout from the Today tab!
           </p>
         </div>
@@ -107,14 +107,14 @@ export default function HistoryPage() {
               <Link
                 key={session.id}
                 href={`/history/${session.id}`}
-                className="block bg-zinc-900 border border-zinc-800 rounded-lg p-4 hover:border-zinc-700 transition-colors"
+                className="block bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-4 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors"
               >
                 <div className="flex justify-between items-start mb-2">
                   <div>
                     <p className="font-medium text-lg">
                       {getScheduleName(session.workout_schedules)}
                     </p>
-                    <p className="text-zinc-400 text-sm">
+                    <p className="text-zinc-500 dark:text-zinc-400 text-sm">
                       {formatDate(session.started_at)}
                     </p>
                   </div>
@@ -129,10 +129,10 @@ export default function HistoryPage() {
                   </span>
                 </div>
 
-                <div className="flex items-center gap-4 text-sm text-zinc-400">
+                <div className="flex items-center gap-4 text-sm text-zinc-500 dark:text-zinc-400">
                   {totalExercises > 0 && (
                     <div className="flex items-center gap-2">
-                      <div className="w-16 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                      <div className="w-16 h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
                         <div
                           className="h-full bg-green-400 rounded-full transition-all"
                           style={{

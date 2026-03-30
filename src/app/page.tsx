@@ -115,9 +115,24 @@ export default function Home() {
                     {exercise.sets} x {exercise.reps}
                   </p>
                 </div>
-                {exercise.notes && (
-                  <p className="text-zinc-500 text-sm mt-1">{exercise.notes}</p>
-                )}
+                {exercise.notes && (() => {
+                  const [desc, url] = exercise.notes.split('|||');
+                  return (
+                    <div className="mt-2">
+                      {desc && <p className="text-zinc-500 text-sm">{desc.trim()}</p>}
+                      {url && (
+                        <a
+                          href={url.trim()}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-400 text-sm mt-1 inline-block hover:underline"
+                        >
+                          How to do this exercise &rarr;
+                        </a>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
             ))}
           </div>

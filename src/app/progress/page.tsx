@@ -47,6 +47,184 @@ function formatDuration(minutes: number): string {
   return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
 }
 
+function toLocalDateString(dateStr: string): string {
+  const d = new Date(dateStr);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function computeStreaks(sessions: WorkoutSession[]): {
+  currentStreak: number;
+  longestStreak: number;
+} {
+  const completedDates = new Set<string>();
+  for (const s of sessions) {
+    if (s.completed_at) {
+      completedDates.add(toLocalDateString(s.completed_at));
+    }
+  }
+
+  if (completedDates.size === 0) return { currentStreak: 0, longestStreak: 0 };
+
+  const sorted = Array.from(completedDates).sort();
+  const earliest = new Date(sorted[0]);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  earliest.setHours(0, 0, 0, 0);
+
+  let longestStreak = 0;
+  let currentRun = 0;
+  const d = new Date(earliest);
+  while (d <= today) {
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    if (completedDates.has(key)) {
+      currentRun++;
+      if (currentRun > longestStreak) longestStreak = currentRun;
+    } else {
+      currentRun = 0;
+    }
+    d.setDate(d.getDate() + 1);
+  }
+
+  let currentStreak = 0;
+  const check = new Date(today);
+  const todayKey = `${check.getFullYear()}-${String(check.getMonth() + 1).padStart(2, "0")}-${String(check.getDate()).padStart(2, "0")}`;
+  if (!completedDates.has(todayKey)) {
+    check.setDate(check.getDate() - 1);
+  }
+  while (true) {
+    const key = `${check.getFullYear()}-${String(check.getMonth() + 1).padStart(2, "0")}-${String(check.getDate()).padStart(2, "0")}`;
+    if (completedDates.has(key)) {
+      currentStreak++;
+      check.setDate(check.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  return { currentStreak, longestStreak };
+}
+
+interface CalendarDay {
+  date: string;
+  count: number;
+  isToday: boolean;
+  dayOfMonth: number;
+  month: number;
+  year: number;
+}
+
+function buildCalendarDays(sessions: WorkoutSession[]): CalendarDay[] {
+  const countsByDate: Record<string, number> = {};
+  for (const s of sessions) {
+    if (s.completed_at) {
+      const key = toLocalDateString(s.completed_at);
+      countsByDate[key] = (countsByDate[key] || 0) + 1;
+    }
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayKey = toLocalDateString(today.toISOString());
+
+  const todayDow = today.getDay();
+  const endOfWeek = new Date(today);
+  endOfWeek.setDate(endOfWeek.getDate() + (6 - todayDow));
+
+  const startDate = new Date(endOfWeek);
+  startDate.setDate(startDate.getDate() - 83);
+
+  const days: CalendarDay[] = [];
+  const d = new Date(startDate);
+  for (let i = 0; i < 84; i++) {
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    days.push({
+      date: key,
+      count: countsByDate[key] || 0,
+      isToday: key === todayKey,
+      dayOfMonth: d.getDate(),
+      month: d.getMonth(),
+      year: d.getFullYear(),
+    });
+    d.setDate(d.getDate() + 1);
+  }
+
+  return days;
+}
+
+function StreakCalendar({ sessions }: { sessions: WorkoutSession[] }) {
+  const { currentStreak, longestStreak } = computeStreaks(sessions);
+  const days = buildCalendarDays(sessions);
+
+  const dayLabels = ["S", "M", "T", "W", "T", "F", "S"];
+  const showLabel = [false, true, false, true, false, true, false];
+
+  const monthLabels: { col: number; label: string }[] = [];
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  let lastMonth = -1;
+  for (let i = 0; i < days.length; i++) {
+    const col = Math.floor(i / 7);
+    const row = i % 7;
+    if (row === 0 && days[i].month !== lastMonth) {
+      monthLabels.push({ col, label: monthNames[days[i].month] });
+      lastMonth = days[i].month;
+    }
+  }
+
+  function getCellColor(count: number, isToday: boolean): string {
+    let bg = "bg-zinc-100 dark:bg-zinc-800";
+    if (count === 1) bg = "bg-green-200 dark:bg-green-900";
+    if (count >= 2) bg = "bg-green-400 dark:bg-green-600";
+    const ring = isToday ? " ring-2 ring-green-500 dark:ring-green-400" : "";
+    return `${bg}${ring}`;
+  }
+
+  return (
+    <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-4 mb-6">
+      <h2 className="text-sm font-semibold mb-3">Workout Streak</h2>
+      <div className="flex gap-4 mb-4 text-sm text-zinc-700 dark:text-zinc-300">
+        <span>
+          Current: <span className="font-semibold">{currentStreak} {currentStreak === 1 ? "day" : "days"}</span>
+        </span>
+        <span className="text-zinc-300 dark:text-zinc-600">|</span>
+        <span>
+          Best: <span className="font-semibold">{longestStreak} {longestStreak === 1 ? "day" : "days"}</span>
+        </span>
+      </div>
+      <div className="flex gap-1">
+        <div className="grid grid-rows-7 gap-1 mr-1 text-[10px] text-zinc-400 dark:text-zinc-500">
+          {dayLabels.map((label, i) => (
+            <div key={i} className="w-3 h-3 flex items-center justify-end leading-none">
+              {showLabel[i] ? label : ""}
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-rows-7 grid-flow-col gap-1">
+          {days.map((day) => (
+            <div
+              key={day.date}
+              className={`w-3 h-3 rounded-sm ${getCellColor(day.count, day.isToday)}`}
+              title={`${day.date}: ${day.count} workout${day.count !== 1 ? "s" : ""}`}
+            />
+          ))}
+        </div>
+      </div>
+      <div className="flex gap-1 mt-1">
+        <div className="w-3 mr-1" />
+        <div className="flex text-[10px] text-zinc-400 dark:text-zinc-500" style={{ position: "relative", height: "14px", width: "100%" }}>
+          {monthLabels.map((m, i) => (
+            <span
+              key={i}
+              style={{ position: "absolute", left: `${m.col * 16}px` }}
+            >
+              {m.label}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function computeWeeklyData(sessions: WorkoutSession[]): WeekData[] {
   const now = new Date();
   const weeks: WeekData[] = [];
@@ -363,6 +541,8 @@ export default function ProgressPage() {
 
       {!loading && sessions.length > 0 && (
         <>
+          <StreakCalendar sessions={sessions} />
+
           <div className="grid grid-cols-2 gap-3 mb-6">
             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-4">
               <p className="text-zinc-500 dark:text-zinc-400 text-xs mb-1">

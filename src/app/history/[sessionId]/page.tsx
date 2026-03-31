@@ -139,7 +139,7 @@ export default function SessionDetailPage() {
       {!loading && session && (
         <>
           <div className="mb-6">
-            <h1 className="text-2xl font-bold">
+            <h1 className="text-2xl font-bold uppercase tracking-wide">
               {getScheduleName(session.workout_schedules)}
             </h1>
             <p className="text-zinc-500 dark:text-zinc-400 text-lg">

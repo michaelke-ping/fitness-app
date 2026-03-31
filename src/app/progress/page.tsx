@@ -172,15 +172,15 @@ function StreakCalendar({ sessions }: { sessions: WorkoutSession[] }) {
 
   function getCellColor(count: number, isToday: boolean): string {
     let bg = "bg-zinc-100 dark:bg-zinc-800";
-    if (count === 1) bg = "bg-green-200 dark:bg-green-900";
-    if (count >= 2) bg = "bg-green-400 dark:bg-green-600";
-    const ring = isToday ? " ring-2 ring-green-500 dark:ring-green-400" : "";
+    if (count === 1) bg = "bg-blue-200 dark:bg-blue-900";
+    if (count >= 2) bg = "bg-blue-400 dark:bg-blue-600";
+    const ring = isToday ? " ring-2 ring-blue-500 dark:ring-blue-400" : "";
     return `${bg}${ring}`;
   }
 
   return (
     <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-4 mb-6">
-      <h2 className="text-sm font-semibold mb-3">Workout Streak</h2>
+      <h2 className="text-sm font-semibold mb-3 uppercase tracking-wider">Workout Streak</h2>
       <div className="flex gap-4 mb-4 text-sm text-zinc-700 dark:text-zinc-300">
         <span>
           Current: <span className="font-semibold">{currentStreak} {currentStreak === 1 ? "day" : "days"}</span>
@@ -314,7 +314,7 @@ function BarChart({
               width={barWidth}
               height={Math.max(barHeight, 0)}
               rx={4}
-              className="fill-green-600 dark:fill-green-400"
+              className="fill-blue-500 dark:fill-blue-400"
             />
             {value > 0 && (
               <text
@@ -383,7 +383,7 @@ function CompletionChart({
               width={barWidth}
               height={Math.max(barHeight, 0)}
               rx={4}
-              className="fill-green-600 dark:fill-green-400"
+              className="fill-blue-500 dark:fill-blue-400"
             />
             {value > 0 && (
               <text
@@ -448,7 +448,7 @@ function HorizontalBarChart({ data }: { data: ExerciseCount[] }) {
               width={Math.max(barWidth, 0)}
               height={20}
               rx={4}
-              className="fill-green-600 dark:fill-green-400"
+              className="fill-blue-500 dark:fill-blue-400"
             />
             <text
               x={labelWidth + barWidth + 6}
@@ -522,7 +522,7 @@ export default function ProgressPage() {
 
   return (
     <div className="max-w-[480px] mx-auto px-4 py-6 pb-24">
-      <h1 className="text-2xl font-bold mb-6">Progress</h1>
+      <h1 className="text-2xl font-bold mb-6 uppercase tracking-wide">Progress</h1>
 
       {loading && (
         <div className="text-zinc-500 dark:text-zinc-400 text-center py-12">
@@ -548,32 +548,32 @@ export default function ProgressPage() {
               <p className="text-zinc-500 dark:text-zinc-400 text-xs mb-1">
                 Total Workouts
               </p>
-              <p className="text-2xl font-bold">{totalWorkouts}</p>
+              <p className="text-2xl font-bold text-blue-400">{totalWorkouts}</p>
             </div>
             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-4">
               <p className="text-zinc-500 dark:text-zinc-400 text-xs mb-1">
                 Exercises Done
               </p>
-              <p className="text-2xl font-bold">{totalExercises}</p>
+              <p className="text-2xl font-bold text-blue-400">{totalExercises}</p>
             </div>
             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-4">
               <p className="text-zinc-500 dark:text-zinc-400 text-xs mb-1">
                 This Week
               </p>
-              <p className="text-2xl font-bold">{thisWeekWorkouts}</p>
+              <p className="text-2xl font-bold text-blue-400">{thisWeekWorkouts}</p>
             </div>
             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-4">
               <p className="text-zinc-500 dark:text-zinc-400 text-xs mb-1">
                 Avg Duration
               </p>
-              <p className="text-2xl font-bold">
+              <p className="text-2xl font-bold text-blue-400">
                 {avgDuration > 0 ? formatDuration(avgDuration) : "--"}
               </p>
             </div>
           </div>
 
           <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-4 mb-4">
-            <h2 className="text-sm font-semibold mb-3">
+            <h2 className="text-sm font-semibold mb-3 uppercase tracking-wider">
               Workouts Per Week
             </h2>
             <BarChart
@@ -584,7 +584,7 @@ export default function ProgressPage() {
           </div>
 
           <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-4 mb-4">
-            <h2 className="text-sm font-semibold mb-3">
+            <h2 className="text-sm font-semibold mb-3 uppercase tracking-wider">
               Completion Rate
             </h2>
             <CompletionChart
@@ -595,7 +595,7 @@ export default function ProgressPage() {
 
           {topExercises.length > 0 && (
             <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-4 mb-4">
-              <h2 className="text-sm font-semibold mb-3">
+              <h2 className="text-sm font-semibold mb-3 uppercase tracking-wider">
                 Most Frequent Exercises
               </h2>
               <HorizontalBarChart data={topExercises} />

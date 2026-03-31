@@ -361,7 +361,7 @@ function ScheduleEditContent() {
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </Link>
-        <h1 className="text-2xl font-bold">Edit {DAY_NAMES[activeDay]}</h1>
+        <h1 className="text-2xl font-bold uppercase tracking-wide">Edit {DAY_NAMES[activeDay]}</h1>
       </div>
 
       {/* Day selector */}
@@ -372,7 +372,7 @@ function ScheduleEditContent() {
             onClick={() => handleDaySwitch(index)}
             className={`w-10 h-10 rounded-full text-sm font-medium transition-colors ${
               index === activeDay
-                ? "bg-black dark:bg-white text-white dark:text-black"
+                ? "bg-blue-500 text-white shadow-md shadow-blue-500/25"
                 : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
             }`}
           >
@@ -397,7 +397,7 @@ function ScheduleEditContent() {
               value={workoutName}
               onChange={(e) => setWorkoutName(e.target.value)}
               placeholder="e.g. Push Day, Upper Body"
-              className="w-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg px-4 py-3 border border-zinc-300 dark:border-zinc-700 focus:border-zinc-500 focus:outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
+              className="w-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg px-4 py-3 border border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
             />
           </div>
 
@@ -422,7 +422,7 @@ function ScheduleEditContent() {
                           updateExercise(index, "name", e.target.value)
                         }
                         placeholder="Exercise name"
-                        className="w-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg px-3 py-2 text-sm border border-zinc-300 dark:border-zinc-700 focus:border-zinc-500 focus:outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
+                        className="w-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg px-3 py-2 text-sm border border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                       />
                     </div>
                     <button
@@ -463,7 +463,7 @@ function ScheduleEditContent() {
                             parseInt(e.target.value, 10) || 1
                           )
                         }
-                        className="w-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg px-3 py-2 text-sm border border-zinc-300 dark:border-zinc-700 focus:border-zinc-500 focus:outline-none"
+                        className="w-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg px-3 py-2 text-sm border border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:outline-none"
                       />
                     </div>
                     <div className="w-24">
@@ -477,7 +477,7 @@ function ScheduleEditContent() {
                           updateExercise(index, "reps", e.target.value)
                         }
                         placeholder="8-12"
-                        className="w-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg px-3 py-2 text-sm border border-zinc-300 dark:border-zinc-700 focus:border-zinc-500 focus:outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
+                        className="w-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg px-3 py-2 text-sm border border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                       />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -491,7 +491,7 @@ function ScheduleEditContent() {
                           updateExercise(index, "notes", e.target.value)
                         }
                         placeholder="Optional"
-                        className="w-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg px-3 py-2 text-sm border border-zinc-300 dark:border-zinc-700 focus:border-zinc-500 focus:outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
+                        className="w-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-lg px-3 py-2 text-sm border border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                       />
                     </div>
                   </div>
@@ -524,7 +524,7 @@ function ScheduleEditContent() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex-1 bg-black dark:bg-white text-white dark:text-black font-semibold py-3 rounded-lg text-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 btn-gradient py-3 text-lg rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving ? "Saving..." : "Save Changes"}
             </button>

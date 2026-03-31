@@ -78,7 +78,7 @@ export default function Home() {
   return (
     <div className="max-w-[480px] mx-auto px-4 py-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Today&apos;s Workout</h1>
+        <h1 className="text-2xl font-bold uppercase tracking-wide">Today&apos;s Workout</h1>
         <p className="text-zinc-500 dark:text-zinc-400 text-lg">{dayName}</p>
       </div>
 
@@ -97,7 +97,7 @@ export default function Home() {
         <>
           <div className="mb-6">
             <h2 className="text-xl font-semibold">{schedule.name}</h2>
-            <p className="text-zinc-500 dark:text-zinc-400 text-sm">
+            <p className="text-zinc-500 dark:text-zinc-400 text-sm uppercase tracking-wider font-semibold">
               {schedule.schedule_exercises.length} exercise
               {schedule.schedule_exercises.length !== 1 ? "s" : ""}
             </p>
@@ -107,7 +107,7 @@ export default function Home() {
             {schedule.schedule_exercises.map((exercise) => (
               <div
                 key={exercise.id}
-                className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-4"
+                className="bg-white dark:bg-zinc-900 border border-blue-500/30 rounded-2xl shadow-[0_0_20px_rgba(59,130,246,0.12)] p-4"
               >
                 <div className="flex justify-between items-start">
                   <p className="font-medium text-lg">{exercise.name}</p>
@@ -139,7 +139,7 @@ export default function Home() {
 
           <Link
             href={`/workout/${schedule.id}`}
-            className="block w-full text-center bg-black dark:bg-white text-white dark:text-black font-semibold py-4 rounded-lg text-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
+            className="block w-full text-center btn-gradient w-full py-4 text-lg rounded-xl"
           >
             {hasActiveSession ? "Resume Workout" : "Start Workout"}
           </Link>

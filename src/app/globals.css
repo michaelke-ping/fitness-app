@@ -15,6 +15,11 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-accent: #3B82F6;
+  --color-accent-light: #60A5FA;
+  --color-accent-dark: #2563EB;
+  --color-accent-glow: rgba(59, 130, 246, 0.25);
+  --color-accent-subtle: rgba(59, 130, 246, 0.10);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -23,4 +28,28 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.btn-gradient {
+  background: linear-gradient(to right, #3B82F6, #2563EB);
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.25);
+  transition: all 0.2s;
+}
+
+.btn-gradient:hover {
+  background: linear-gradient(to right, #60A5FA, #3B82F6);
+}
+
+.btn-gradient:active {
+  background: linear-gradient(to right, #2563EB, #1D4ED8);
+}
+
+.btn-gradient:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

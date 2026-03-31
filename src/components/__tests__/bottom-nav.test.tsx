@@ -56,7 +56,7 @@ describe("BottomNav", () => {
     const todayLink = screen.getByText("Today").closest("a");
     const scheduleLink = screen.getByText("Schedule").closest("a");
 
-    expect(todayLink?.className).toContain("text-white");
+    expect(todayLink?.className).toContain("text-blue-500");
     expect(scheduleLink?.className).toContain("text-zinc-500");
   });
 
@@ -68,7 +68,7 @@ describe("BottomNav", () => {
     const scheduleLink = screen.getByText("Schedule").closest("a");
 
     expect(todayLink?.className).toContain("text-zinc-500");
-    expect(scheduleLink?.className).toContain("text-white");
+    expect(scheduleLink?.className).toContain("text-blue-500");
   });
 
   it("highlights the History tab when on /history", () => {
@@ -78,7 +78,7 @@ describe("BottomNav", () => {
     const historyLink = screen.getByText("History").closest("a");
     const todayLink = screen.getByText("Today").closest("a");
 
-    expect(historyLink?.className).toContain("text-white");
+    expect(historyLink?.className).toContain("text-blue-500");
     expect(todayLink?.className).toContain("text-zinc-500");
   });
 
@@ -87,6 +87,6 @@ describe("BottomNav", () => {
     render(<BottomNav />);
 
     const scheduleLink = screen.getByText("Schedule").closest("a");
-    expect(scheduleLink?.className).toContain("text-white");
+    expect(scheduleLink?.className).toContain("text-blue-500");
   });
 });

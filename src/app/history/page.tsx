@@ -79,7 +79,7 @@ export default function HistoryPage() {
 
   return (
     <div className="max-w-[480px] mx-auto px-4 py-6">
-      <h1 className="text-2xl font-bold mb-6">Workout History</h1>
+      <h1 className="text-2xl font-bold mb-6 uppercase tracking-wide">Workout History</h1>
 
       {loading && (
         <div className="text-zinc-500 dark:text-zinc-400 text-center py-12">Loading...</div>
@@ -107,7 +107,7 @@ export default function HistoryPage() {
               <Link
                 key={session.id}
                 href={`/history/${session.id}`}
-                className="block bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-4 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors"
+                className="block bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-4 hover:border-blue-500/30 dark:hover:border-blue-500/30 transition-colors"
               >
                 <div className="flex justify-between items-start mb-2">
                   <div>

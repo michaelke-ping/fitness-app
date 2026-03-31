@@ -264,8 +264,8 @@ export default function WorkoutPage() {
   return (
     <div className="max-w-[480px] mx-auto px-4 py-6">
       <div className="flex items-center justify-between mb-2">
-        <h1 className="text-2xl font-bold">{workoutName}</h1>
-        <span className="text-zinc-500 dark:text-zinc-400 font-mono text-lg tabular-nums">
+        <h1 className="text-2xl font-bold uppercase tracking-wide">{workoutName}</h1>
+        <span className="text-blue-400 font-mono text-lg tabular-nums">
           {elapsed}
         </span>
       </div>
@@ -274,9 +274,9 @@ export default function WorkoutPage() {
         {completedCount}/{exercises.length} exercises completed
       </p>
 
-      <div className="w-full bg-zinc-200 dark:bg-zinc-800 rounded-full h-1.5 mb-6">
+      <div className="w-full bg-zinc-200 dark:bg-zinc-800 rounded-full h-2 mb-6">
         <div
-          className="bg-green-500 h-1.5 rounded-full transition-all duration-300"
+          className="bg-blue-500 h-2 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.4)] transition-all duration-300"
           style={{
             width:
               exercises.length > 0

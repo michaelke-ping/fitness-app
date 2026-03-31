@@ -100,12 +100,15 @@ export default function BottomNav() {
             <Link
               key={tab.href}
               href={tab.href}
-              className={`flex flex-col items-center justify-center min-w-[48px] min-h-[48px] py-2 px-4 transition-colors ${
+              className={`relative flex flex-col items-center justify-center min-w-[48px] min-h-[48px] py-2 px-4 transition-colors ${
                 isActive
-                  ? "text-zinc-900 dark:text-white"
+                  ? "text-blue-500"
                   : "text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300"
               }`}
             >
+              {isActive && (
+                <span className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-6 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+              )}
               {tab.icon}
               <span className="text-xs mt-1">{tab.label}</span>
             </Link>

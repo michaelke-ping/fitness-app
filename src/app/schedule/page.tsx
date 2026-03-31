@@ -56,7 +56,7 @@ export default function SchedulePage() {
 
   return (
     <div className="max-w-[480px] mx-auto px-4 py-6">
-      <h1 className="text-2xl font-bold mb-6">Weekly Schedule</h1>
+      <h1 className="text-2xl font-bold mb-6 uppercase tracking-wide">Weekly Schedule</h1>
 
       {loading && (
         <div className="text-zinc-500 dark:text-zinc-400 text-center py-12">Loading...</div>
@@ -73,7 +73,7 @@ export default function SchedulePage() {
                 key={index}
                 href={`/schedule/edit?day=${index}`}
                 className={`block bg-white dark:bg-zinc-900 border rounded-lg p-4 ${
-                  isToday ? "border-zinc-900 dark:border-white" : "border-zinc-200 dark:border-zinc-800"
+                  isToday ? "border-blue-500/40 shadow-[0_0_15px_rgba(59,130,246,0.15)]" : "border-zinc-200 dark:border-zinc-800"
                 } hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors`}
               >
                 <div className="flex justify-between items-center">

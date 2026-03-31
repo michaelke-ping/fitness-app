@@ -63,6 +63,10 @@ function ScheduleEditContent() {
   const [exercises, setExercises] = useState<ExerciseRow[]>([]);
   const [originalExerciseIds, setOriginalExerciseIds] = useState<string[]>([]);
 
+  const [showCopyModal, setShowCopyModal] = useState(false);
+  const [copyConfirmDay, setCopyConfirmDay] = useState<number | null>(null);
+  const [copying, setCopying] = useState(false);
+
   const fetchSchedule = useCallback(async (day: number) => {
     setLoading(true);
     setMessage(null);
@@ -248,6 +252,93 @@ function ScheduleEditContent() {
     setSaving(false);
   };
 
+  const handleCopyToDay = async (targetDay: number) => {
+    setCopying(true);
+    setCopyConfirmDay(null);
+
+    try {
+      const validExercises = exercises.filter((e) => e.name.trim() !== "");
+      const trimmedName = workoutName.trim();
+
+      const { data: existing } = await supabase
+        .from("workout_schedules")
+        .select("id")
+        .eq("day_of_week", targetDay)
+        .single();
+
+      let targetScheduleId: string;
+
+      if (existing) {
+        await supabase
+          .from("schedule_exercises")
+          .delete()
+          .eq("schedule_id", existing.id);
+
+        await supabase
+          .from("workout_schedules")
+          .update({ name: trimmedName, updated_at: new Date().toISOString() })
+          .eq("id", existing.id);
+
+        targetScheduleId = existing.id;
+      } else {
+        const { data, error } = await supabase
+          .from("workout_schedules")
+          .insert({
+            day_of_week: targetDay,
+            name: trimmedName,
+            sort_order: targetDay,
+          })
+          .select("id")
+          .single();
+
+        if (error || !data) throw error ?? new Error("Failed to create schedule");
+        targetScheduleId = data.id;
+      }
+
+      if (validExercises.length > 0) {
+        const newExercises = validExercises.map((e, i) => ({
+          schedule_id: targetScheduleId,
+          name: e.name.trim(),
+          sets: e.sets,
+          reps: e.reps,
+          sort_order: i,
+          notes: e.notes.trim() || null,
+        }));
+
+        const { error } = await supabase
+          .from("schedule_exercises")
+          .insert(newExercises);
+
+        if (error) throw error;
+      }
+
+      setShowCopyModal(false);
+      setMessage({ type: "success", text: `Copied to ${DAY_NAMES[targetDay]}` });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to copy";
+      setMessage({ type: "error", text: errorMessage });
+      setShowCopyModal(false);
+    }
+
+    setCopying(false);
+  };
+
+  const handleDaySelect = async (targetDay: number) => {
+    const { data: existing } = await supabase
+      .from("workout_schedules")
+      .select("id")
+      .eq("day_of_week", targetDay)
+      .single();
+
+    if (existing) {
+      setCopyConfirmDay(targetDay);
+    } else {
+      handleCopyToDay(targetDay);
+    }
+  };
+
+  const hasCopyableWorkout = workoutName.trim() !== "" && exercises.some((e) => e.name.trim() !== "");
+
   return (
     <div className="max-w-[480px] mx-auto px-4 py-6">
       <div className="flex items-center gap-3 mb-6">
@@ -428,14 +519,99 @@ function ScheduleEditContent() {
             </p>
           )}
 
-          {/* Save button */}
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="w-full bg-black dark:bg-white text-white dark:text-black font-semibold py-3 rounded-lg text-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          {/* Action buttons */}
+          <div className="flex gap-3">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="flex-1 bg-black dark:bg-white text-white dark:text-black font-semibold py-3 rounded-lg text-lg hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {saving ? "Saving..." : "Save Changes"}
+            </button>
+            {hasCopyableWorkout && (
+              <button
+                onClick={() => { setShowCopyModal(true); setCopyConfirmDay(null); setMessage(null); }}
+                className="px-4 py-3 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-medium rounded-lg text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+              >
+                Copy to...
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {showCopyModal && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4"
+          onClick={() => { setShowCopyModal(false); setCopyConfirmDay(null); }}
+        >
+          <div
+            className="bg-white dark:bg-zinc-900 rounded-xl p-6 w-full max-w-sm border border-zinc-200 dark:border-zinc-800"
+            onClick={(e) => e.stopPropagation()}
           >
-            {saving ? "Saving..." : "Save Changes"}
-          </button>
+            {copyConfirmDay === null ? (
+              <>
+                <h2 className="text-lg font-semibold text-zinc-900 dark:text-white mb-1">
+                  Copy to Day
+                </h2>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
+                  Copy &quot;{workoutName.trim()}&quot; and {exercises.filter((e) => e.name.trim() !== "").length} exercise{exercises.filter((e) => e.name.trim() !== "").length !== 1 ? "s" : ""} to:
+                </p>
+                <div className="flex justify-between gap-2 mb-4">
+                  {DAY_LABELS.map((label, index) => (
+                    index !== activeDay ? (
+                      <button
+                        key={index}
+                        onClick={() => handleDaySelect(index)}
+                        disabled={copying}
+                        className="w-10 h-10 rounded-full text-sm font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors disabled:opacity-50"
+                      >
+                        {label}
+                      </button>
+                    ) : (
+                      <div
+                        key={index}
+                        className="w-10 h-10 rounded-full text-sm font-medium flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 text-zinc-300 dark:text-zinc-600"
+                      >
+                        {label}
+                      </div>
+                    )
+                  ))}
+                </div>
+                <button
+                  onClick={() => { setShowCopyModal(false); setCopyConfirmDay(null); }}
+                  className="w-full py-2 text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
+                >
+                  Cancel
+                </button>
+              </>
+            ) : (
+              <>
+                <h2 className="text-lg font-semibold text-zinc-900 dark:text-white mb-2">
+                  Overwrite {DAY_NAMES[copyConfirmDay]}?
+                </h2>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
+                  {DAY_NAMES[copyConfirmDay]} already has a workout. This will replace it with the current workout and exercises.
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setCopyConfirmDay(null)}
+                    disabled={copying}
+                    className="flex-1 py-2.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-medium rounded-lg text-sm hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+                  >
+                    Back
+                  </button>
+                  <button
+                    onClick={() => handleCopyToDay(copyConfirmDay)}
+                    disabled={copying}
+                    className="flex-1 py-2.5 bg-red-500 text-white font-medium rounded-lg text-sm hover:bg-red-600 transition-colors disabled:opacity-50"
+                  >
+                    {copying ? "Copying..." : "Overwrite"}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       )}
     </div>
